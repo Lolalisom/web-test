@@ -173,19 +173,29 @@
   </div>
 
   <script>
-    const users = [];
-
+    let users = [];
+  
+    // Load from localStorage on page load
+    window.onload = function () {
+      const storedUsers = localStorage.getItem('students');
+      if (storedUsers) {
+        users = JSON.parse(storedUsers);
+        updateTable();
+      }
+    };
+  
     document.getElementById('addForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const name = document.getElementById('name').value;
       const id = document.getElementById('id').value;
       const marks = document.getElementById('marks').value;
-
+  
       users.push({ name, id, marks });
+      saveToStorage();
       updateTable();
       this.reset();
     });
-
+  
     function updateTable() {
       const tbody = document.querySelector('#userTable tbody');
       tbody.innerHTML = '';
@@ -193,7 +203,7 @@
         tbody.innerHTML += `<tr><td>${user.name}</td><td>${user.id}</td><td>${user.marks}</td></tr>`;
       });
     }
-
+  
     function showModify() {
       const searchId = document.getElementById('searchId').value;
       const user = users.find(u => u.id === searchId);
@@ -205,20 +215,26 @@
       document.getElementById('modMarks').value = user.marks;
       document.getElementById('modifySection').style.display = 'flex';
     }
-
+  
     function updateUser() {
       const id = document.getElementById('searchId').value;
       const name = document.getElementById('modName').value;
       const marks = document.getElementById('modMarks').value;
-
+  
       const user = users.find(u => u.id === id);
       if (user) {
         user.name = name;
         user.marks = marks;
+        saveToStorage();
         updateTable();
         document.getElementById('modifySection').style.display = 'none';
       }
     }
+  
+    function saveToStorage() {
+      localStorage.setItem('students', JSON.stringify(users));
+    }
   </script>
+  
 </body>
 </html>

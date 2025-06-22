@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Information</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-image: url('resources/background.jpg'); 
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #00f7ff;
+    }
+
+    h2 {
+      color: #fff;
+      text-shadow: 0 0 10px #00f7ff, 0 0 20px #8f00ff;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding: 10px 25px;
+      border-radius: 12px;
+      margin-top: 30px;
+      font-weight: 600;
+    }
+
+    table {
+      width: 90%;
+      max-width: 800px;
+      background-color: rgba(0, 0, 0, 0.4);
+      border-collapse: collapse;
+      margin: 20px auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #444;
+      color: #fff;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    form, #modifySection {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #8f00ff;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: fit-content;
+    }
+
+    input {
+      padding: 10px;
+      margin: 8px 0;
+      border: 2px solid #00f7ff;
+      background: transparent;
+      color: #fff;
+      border-radius: 8px;
+      width: 250px;
+      font-size: 14px;
+      box-shadow: 0 0 10px #00f7ff inset;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 12px;
+      background-color: transparent;
+      border: 2px solid #00f7ff;
+      color: #00f7ff;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 12px #00f7ff;
+    }
+
+    button:hover {
+      background-color: #00f7ff;
+      color: #000;
+      box-shadow: 0 0 20px #00f7ff, 0 0 40px #8f00ff;
+    }
+
+    .btn-warning {
+      border-color: #ffea00;
+      color: #ffea00;
+      box-shadow: 0 0 10px #ffea00;
+    }
+
+    .btn-warning:hover {
+      background-color: #ffea00;
+      color: #000;
+      box-shadow: 0 0 20px #ffea00, 0 0 40px #ff00e6;
+    }
+
+    .btn-success {
+      border-color: #00ff6a;
+      color: #00ff6a;
+      box-shadow: 0 0 10px #00ff6a;
+    }
+
+    .btn-success:hover {
+      background-color: #00ff6a;
+      color: #000;
+      box-shadow: 0 0 20px #00ff6a, 0 0 40px #8f00ff;
+    }
+
+    .btn-secondary {
+      border-color: #aaa;
+      color: #ccc;
+      box-shadow: 0 0 10px #888;
+    }
+
+    .btn-secondary:hover {
+      background-color: #ccc;
+      color: #000;
+    }
+
+    #modifySection {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Student Data</h2>
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Marks</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Add User Information</h2>
+  <form id="addForm">
+    <input type="text" placeholder="Name" id="name" required>
+    <input type="text" placeholder="ID" id="id" required>
+    <input type="number" placeholder="Marks" id="marks" required>
+    <button type="submit">Add</button>
+  </form>
+
+  <h2>Modify User</h2>
+  <form onsubmit="event.preventDefault(); showModify();">
+    <input type="text" placeholder="Enter ID to modify" id="searchId" required>
+    <button class="btn-warning">Modify</button>
+  </form>
+
+  <div id="modifySection">
+    <h3 style="color:#fff;">Modify Info</h3>
+    <input type="text" id="modName" placeholder="New Name">
+    <input type="number" id="modMarks" placeholder="New Marks">
+    <button class="btn-success" onclick="updateUser()">Update</button>
+  </div>
+
+  <script>
+    const users = [];
+
+    document.getElementById('addForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const id = document.getElementById('id').value;
+      const marks = document.getElementById('marks').value;
+
+      users.push({ name, id, marks });
+      updateTable();
+      this.reset();
+    });
+
+    function updateTable() {
+      const tbody = document.querySelector('#userTable tbody');
+      tbody.innerHTML = '';
+      users.forEach(user => {
+        tbody.innerHTML += `<tr><td>${user.name}</td><td>${user.id}</td><td>${user.marks}</td></tr>`;
+      });
+    }
+
+    function showModify() {
+      const searchId = document.getElementById('searchId').value;
+      const user = users.find(u => u.id === searchId);
+      if (!user) {
+        alert("User not found");
+        return;
+      }
+      document.getElementById('modName').value = user.name;
+      document.getElementById('modMarks').value = user.marks;
+      document.getElementById('modifySection').style.display = 'flex';
+    }
+
+    function updateUser() {
+      const id = document.getElementById('searchId').value;
+      const name = document.getElementById('modName').value;
+      const marks = document.getElementById('modMarks').value;
+
+      const user = users.find(u => u.id === id);
+      if (user) {
+        user.name = name;
+        user.marks = marks;
+        updateTable();
+        document.getElementById('modifySection').style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -155,7 +155,7 @@
   <form id="addForm">
     <input type="text" placeholder="Name" id="name" required>
     <input type="text" placeholder="ID" id="id" required>
-    <input type="number" placeholder="Marks (0–100)" id="marks" required min="0" max="100">
+    <input type="number" placeholder="Marks" id="marks" required>
     <button type="submit">Add</button>
   </form>
 
@@ -173,37 +173,19 @@
   </div>
 
   <script>
-    let users = [];
-  
-    window.onload = function () {
-      const storedUsers = localStorage.getItem("students");
-      if (storedUsers) {
-        users = JSON.parse(storedUsers);
-        updateTable();
-      }
-    };
-  
-    function saveToLocal() {
-      localStorage.setItem("students", JSON.stringify(users));
-    }
-  
+    const users = [];
+
     document.getElementById('addForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const name = document.getElementById('name').value;
       const id = document.getElementById('id').value;
       const marks = document.getElementById('marks').value;
-  
-      if (users.some(user => user.id === id)) {
-        alert("ID already exists!");
-        return;
-      }
-  
+
       users.push({ name, id, marks });
       updateTable();
-      saveToLocal(); 
       this.reset();
     });
-  
+
     function updateTable() {
       const tbody = document.querySelector('#userTable tbody');
       tbody.innerHTML = '';
@@ -211,7 +193,7 @@
         tbody.innerHTML += `<tr><td>${user.name}</td><td>${user.id}</td><td>${user.marks}</td></tr>`;
       });
     }
-  
+
     function showModify() {
       const searchId = document.getElementById('searchId').value;
       const user = users.find(u => u.id === searchId);
@@ -223,26 +205,20 @@
       document.getElementById('modMarks').value = user.marks;
       document.getElementById('modifySection').style.display = 'flex';
     }
-  
+
     function updateUser() {
       const id = document.getElementById('searchId').value;
       const name = document.getElementById('modName').value;
-      const marks = parseInt(document.getElementById('marks').value);
-if (marks < 0 || marks > 100) {
-  alert("Marks must be between 0 and 100");
-  return;
-}
-  
+      const marks = document.getElementById('modMarks').value;
+
       const user = users.find(u => u.id === id);
       if (user) {
         user.name = name;
         user.marks = marks;
         updateTable();
-        saveToLocal();
         document.getElementById('modifySection').style.display = 'none';
       }
     }
   </script>
-  
 </body>
 </html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple User Info</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 8px;
+    }
+    input, button {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>User Table</h2>
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Marks</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Add User</h2>
+  <input type="text" id="name" placeholder="Name" required>
+  <input type="text" id="id" placeholder="ID" required>
+  <input type="number" id="marks" placeholder="Marks" required>
+  <button onclick="addUser()">Add</button>
+
+  <h2>Modify User</h2>
+  <input type="text" id="searchId" placeholder="Enter ID to modify">
+  <button onclick="showModify()">Modify</button><br>
+
+  <div id="modifySection" style="display:none;">
+    <h3>Modify Info</h3>
+    <input type="text" id="modName" placeholder="New Name">
+    <input type="number" id="modMarks" placeholder="New Marks">
+    <button onclick="updateUser()">Update</button>
+  </div>
+
+  <script>
+    const users = [];
+
+    function addUser() {
+      const name = document.getElementById('name').value;
+      const id = document.getElementById('id').value;
+      const marks = document.getElementById('marks').value;
+
+      users.push({ name, id, marks });
+      updateTable();
+      document.getElementById('name').value = '';
+      document.getElementById('id').value = '';
+      document.getElementById('marks').value = '';
+    }
+
+    function updateTable() {
+      const tbody = document.querySelector('#userTable tbody');
+      tbody.innerHTML = '';
+      users.forEach(user => {
+        tbody.innerHTML += `<tr><td>${user.name}</td><td>${user.id}</td><td>${user.marks}</td></tr>`;
+      });
+    }
+
+    function showModify() {
+      const searchId = document.getElementById('searchId').value;
+      const user = users.find(u => u.id === searchId);
+      if (!user) {
+        alert("User not found");
+        return;
+      }
+      document.getElementById('modifySection').style.display = 'block';
+      document.getElementById('modName').value = user.name;
+      document.getElementById('modMarks').value = user.marks;
+    }
+
+    function updateUser() {
+      const id = document.getElementById('searchId').value;
+      const name = document.getElementById('modName').value;
+      const marks = document.getElementById('modMarks').value;
+
+      const user = users.find(u => u.id === id);
+      if (user) {
+        user.name = name;
+        user.marks = marks;
+        updateTable();
+        document.getElementById('modifySection').style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
